@@ -38,4 +38,8 @@ function getJokes(e) {
   });
 }
 
-getJokes().then();
+getJokes()
+  .then()
+  .catch(function (err) {
+    console.log(err);
+  });
