@@ -8,24 +8,34 @@ btn.addEventListener("click", getJokes);
 
 // Get Jokes
 function getJokes(e) {
-  let numSelection = number.value;
+  return new Promise(function (resolve, reject) {
+    let numSelection = number.value;
 
-  e.preventDefault();
+    e.preventDefault();
 
-  const xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
 
-  xhr.open("GET", `http://api.icndb.com/jokes/random/${numSelection}`, true);
+    xhr.open("GET", `http://api.icndb.com/jokes/random/${numSelection}`, true);
 
-  xhr.onload = function () {
-    let jokeTransfer = JSON.parse(xhr.responseText);
-    let jokeContent = jokeTransfer.value;
+    xhr.onload = function () {
+      if (this.status === 200) {
+        let jokeTransfer = JSON.parse(xhr.responseText);
+        let jokeContent = jokeTransfer.value;
 
-    jokeContent.forEach((jokes) => {
-      const newJokeLi = document.createElement("li");
-      newJokeLi.textContent = jokes.joke;
-      jokeOutput.appendChild(newJokeLi);
-    });
-  };
+        resolve(
+          jokeContent.forEach((jokes) => {
+            const newJokeLi = document.createElement("li");
+            newJokeLi.textContent = jokes.joke;
+            jokeOutput.appendChild(newJokeLi);
+          })
+        );
+      } else {
+        reject("Error");
+      }
+    };
 
-  xhr.send();
+    xhr.send();
+  });
 }
+
+getJokes().then();
